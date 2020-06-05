@@ -2,7 +2,7 @@
     <div>
       <table border="1">
         <tr v-for="tr in bot_data">
-          <td v-for="td in tr"  v-on:click="shut($event,td)">
+          <td v-for="td in tr"  :class="td.class" v-on:click="shut($event,td)">
           </td>
         </tr>
       </table>
@@ -13,7 +13,6 @@
   function kick(data,th) {
     var id_tr = Math.floor(Math.random() * Math.floor(9));
     var id_td = Math.floor(Math.random() * Math.floor(9));
-    console.log(id_tr,id_td);
       if (data[id_tr][id_td].class !== 'shut' && data[id_tr][id_td].class !== 'kill') {
         th.$emit('back_shut',id_tr,id_td);
       }
@@ -26,13 +25,17 @@
         props: ['bot_data','user_data'],
         methods:{
           shut(e,td,emit){
-             if (td.class==='full'){
-                 $(e.target).addClass('kill');
-             }
-             else{
-               $(e.target).addClass('shut');
-             }
-            kick(this.user_data,this);
+            console.log(td,this.bot_data);
+            if( td.class!=='shut' && td.class!=='kill'){
+              if (td.class==='full'){
+                this.bot_data[td.id_row-1][td.id_col-1].class='kill';
+              }
+              else{
+                this.bot_data[td.id_row-1][td.id_col-1].class='shut';
+              }
+              kick(this.user_data,this);
+            }
+
 
 
 
