@@ -78,48 +78,180 @@
       default:
       {
         number=number+'';
-        tr=rnd[0];
-        td=rnd[1];
+        tr=number[0];
+        td=number[1];
       }
     }
-    return [tr,td];
+    return [Number(tr),Number(td)];
+  }
+  function DelAround(cell,arr_coord) {
+    var check = arr_coord.indexOf(Number(String(cell.id_row-1)+String(cell.id_col-1)));
+    if (check!==-1){
+      arr_coord.splice(check,1);
+    }
+    check = arr_coord.indexOf(Number(String(cell.id_row)+String(cell.id_col-1)));
+    if (check!==-1){
+      arr_coord.splice(check,1);
+    }
+    check = arr_coord.indexOf(Number(String(cell.id_row+1)+String(cell.id_col-1)));
+    if (check!==-1){
+      arr_coord.splice(check,1);
+    }
+    check = arr_coord.indexOf(Number(String(cell.id_row-1)+String(cell.id_col)));
+    if (check!==-1){
+      arr_coord.splice(check,1);
+    }
+    check = arr_coord.indexOf(Number(String(cell.id_row)+String(cell.id_col)));
+    if (check!==-1){
+      arr_coord.splice(check,1);
+    }
+    check = arr_coord.indexOf(Number(String(cell.id_row+1)+String(cell.id_col)));
+    if (check!==-1){
+      arr_coord.splice(check,1);
+    }
+    check = arr_coord.indexOf(Number(String(cell.id_row-1)+String(cell.id_col+1)));
+    if (check!==-1){
+      arr_coord.splice(check,1);
+    }
+    check = arr_coord.indexOf(Number(String(cell.id_row)+String(cell.id_col+1)));
+    if (check!==-1){
+      arr_coord.splice(check,1);
+    }
+    check = arr_coord.indexOf(Number(String(cell.id_row+1)+String(cell.id_col+1)));
+    if (check!==-1){
+      arr_coord.splice(check,1);
+    }
+  }
+  function GetFillFields(coord,lenght,arr_vector,arr_coord) {  //  координаты и длина корабля
+    var rnd = Math.floor(Math.random() * arr_vector.length);
+    var del = 0;
+    var vector =  arr_vector[rnd];
+    var res = [];
+    switch (vector) {
+      case 0:{
+        if (arr_coord.indexOf(Number(String(coord[0]-lenght+1)+String(coord[1])))!==-1){
+          for(var i=0;i<lenght;i++){
+              res.push({
+                id_row: coord[0]-i,
+                id_col: coord[1],
+                vector: vector,
+                class: 'fill'
+              });
+            DelAround(res[i],arr_coord);
+          }
+        }
+        else {
+          arr_vector.splice(rnd,1);
+           res = GetFillFields(coord,lenght,arr_vector,arr_coord);
+        }
+        return res;
+
+
+      }
+      case 1:{
+        if (arr_coord.indexOf(Number(String(coord[0])+String(coord[1]+lenght-1)))!==-1){
+          for(var i=0;i<lenght;i++){
+            res.push({
+              id_row: coord[0],
+              id_col: coord[1]+i,
+              vector: vector,
+              class: 'fill'
+            });
+            DelAround(res[i],arr_coord);
+
+          }
+
+        }
+        else {
+          arr_vector.splice(rnd,1);
+          res = GetFillFields(coord,lenght,arr_vector,arr_coord);
+        }
+        return res;
+
+      }
+      case 2:{
+        if (arr_coord.indexOf(Number(String(coord[0]+lenght-1)+String(coord[1])))!==-1){
+          for(var i=0;i<lenght;i++){
+            res.push({
+              id_row: coord[0]+i,
+              id_col: coord[1],
+              vector: vector,
+              class: 'fill'
+            });
+            DelAround(res[i],arr_coord);
+
+          }
+        }
+        else {
+          arr_vector.splice(rnd,1);
+          res = GetFillFields(coord,lenght,arr_vector,arr_coord);
+        }
+        return res;
+
+      }
+      case 3:{
+
+        if (arr_coord.indexOf(Number(String(coord[0])+String(coord[1]-lenght+1)))!==-1){
+          for(var i=0;i<lenght;i++){
+            res.push({
+              id_row: coord[0],
+              vector: vector,
+              id_col: coord[1]-i,
+              class: 'fill'
+            });
+            DelAround(res[i],arr_coord);
+
+          }
+
+        }
+        else {
+          arr_vector.splice(rnd,1);
+          res = GetFillFields(coord,lenght,arr_vector,arr_coord);
+        }
+        return res;
+
+      }
+
+    }
+
   }
 
 
-  function GetBoats(arr,sum) {
+
+
+
+  function GetAllFields(arr_coord,arr_boats_lenght) {
     var res = [];
-    var rand = Math.floor(Math.random() * arr.length);
-    var coord = GetCoord(rand);
-    var vector = Math.floor(Math.random() * 3);  // { 0 _ top  }, { 1 _ left  }, { 2 _ bot  }, { 0 _ right  }
-    // проверка на движение
-
-    // расстановка корабля удалить из arr координаты корабля
-
-    // удалить координаты около корабля
-
-    res.push(arr[rand]);
-    arr.splice(rand,1);
+    arr_boats_lenght.forEach(function (boat_lenght) {
+      var arr_vector=[0,1,2,3];     // 0 - top; 1 - right; 2 - bot; 3 - left
+      var rand = Math.floor(Math.random() * arr_coord.length);
+      var coord = GetCoord(arr_coord[rand]);      // получаем координаты из массива
+      var boat_fields = GetFillFields(coord,boat_lenght,arr_vector,arr_coord);
+      res.push(boat_fields);
+    });
+    console.log(res);
     return res;
   }
+
+
   function CreateBoat() {
-    var arr_use,arr = [];
+    var arr = [];
+    var arr_boats_lenght=[4,3,3,2,2,2,1,1,1,1];
     for (var i=0;i<100;i++){
       arr.push(i);
     }
-    arr_boats.forEach(function (item) {
-      var tr,td=0;
-      var rnd = GetBoats(arr,item);
+    var boats = GetAllFields(arr,arr_boats_lenght);
+    for (var i = 0;i<10;i++){
+      for (var k=0;k<10;k++){
 
-      console.log(tr,td,arr);
-    });
-
+      }
+    }
 
   }
     export default {
         name: "FloatBoat",
       methods:{
           shut(tr,td){
-            //CreateBoat();
             if(this.userdata[tr][td].class==='full'){
               this.userdata[tr][td].class = 'kill';
             }
@@ -130,7 +262,7 @@
       },
       data(){
           return {
-            botdata:[
+            /*botdata:[
               [
                 {id_row:1,id_col:1, class: 'empty'},
                 {id_row:1,id_col:2, class: 'empty'},
@@ -373,11 +505,17 @@
                 {id_row:10,id_col:8, class: 'empty'},
                 {id_row:10,id_col:9, class: 'full'},
                 {id_row:10,id_col:10, class: 'empty'}
-              ]]
+              ]]*/
+
           }
       },
         computed:{
-
+            botdata(){
+              CreateBoat();
+            },
+            userdata(){
+              CreateBoat();
+            }
         },
         components:{
           BotField: botfield,
