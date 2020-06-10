@@ -227,7 +227,9 @@
       var rand = Math.floor(Math.random() * arr_coord.length);
       var coord = GetCoord(arr_coord[rand]);      // получаем координаты из массива
       var boat_fields = GetFillFields(coord,boat_lenght,arr_vector,arr_coord);
-      res.push(boat_fields);
+      boat_fields.forEach(function (item) {
+        res.push(item);
+      });
     });
     console.log(res);
     return res;
@@ -236,17 +238,23 @@
 
   function CreateBoat() {
     var arr = [];
+    var res = [];
     var arr_boats_lenght=[4,3,3,2,2,2,1,1,1,1];
     for (var i=0;i<100;i++){
       arr.push(i);
     }
     var boats = GetAllFields(arr,arr_boats_lenght);
     for (var i = 0;i<10;i++){
+      res[i]=[];
       for (var k=0;k<10;k++){
-
+        res[i].push({id_row:i,id_col:k,class:'empty'});
       }
     }
-
+  boats.forEach(function (item) {
+    res[item.id_row][item.id_col].class='full'
+  });
+    console.log(res);
+    return res;
   }
     export default {
         name: "FloatBoat",
@@ -261,7 +269,11 @@
           }
       },
       data(){
+          var arr1 = CreateBoat();
+          var arr2 = CreateBoat();
           return {
+            botdata:arr1,
+            userdata: arr2
             /*botdata:[
               [
                 {id_row:1,id_col:1, class: 'empty'},
@@ -510,12 +522,12 @@
           }
       },
         computed:{
-            botdata(){
-              CreateBoat();
-            },
-            userdata(){
-              CreateBoat();
-            }
+            // botdata(){
+            //    return CreateBoat();
+            // },
+            // userdata(){
+            //  return  CreateBoat();
+            // }
         },
         components:{
           BotField: botfield,

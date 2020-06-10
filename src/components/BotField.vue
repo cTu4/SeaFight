@@ -10,11 +10,15 @@
 </template>
 
 <script>
+
   function kick(data,th) {
     var id_tr = Math.floor(Math.random() * Math.floor(9));
     var id_td = Math.floor(Math.random() * Math.floor(9));
       if (data[id_tr][id_td].class !== 'shut' && data[id_tr][id_td].class !== 'kill') {
         th.$emit('back_shut',id_tr,id_td);
+        if(data[id_tr][id_td].class==='kill'){
+          kick(data,th);
+        }
       }
       else {
         kick(data,th);
@@ -24,16 +28,17 @@
         name: "FloatBoard",
         props: ['bot_data','user_data'],
         methods:{
-          shut(e,td,emit){
-            console.log(td,this.bot_data);
+          shut(e,td){
+            console.log(td);
             if( td.class!=='shut' && td.class!=='kill'){
               if (td.class==='full'){
-                this.bot_data[td.id_row-1][td.id_col-1].class='kill';
+                this.bot_data[td.id_row][td.id_col].class='kill';
               }
               else{
-                this.bot_data[td.id_row-1][td.id_col-1].class='shut';
+                this.bot_data[td.id_row][td.id_col].class='shut';
+                kick(this.user_data,this);
+
               }
-              kick(this.user_data,this);
             }
 
 
