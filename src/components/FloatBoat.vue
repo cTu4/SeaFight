@@ -1,9 +1,14 @@
 <template>
   <div>
     <h1>Морской бой</h1>
-    <div class="wrapper">
+    <div class="flex">
+
       <user-field :data="userdata" ></user-field>
-      <bot-field :bot_data="botdata" :user_data="userdata" v-on:back_shut="shut"></bot-field>
+      <bot-field :bot_data="botdata" :arr_coord_user="arr_coord_user" :user_data="userdata" v-on:back_shut="shut"></bot-field>
+    </div>
+    <div class="flex">
+      <button v-on:click="">Начать игру</button>
+      <button v-on:click="restart">Рестарт</button>
     </div>
   </div>
 
@@ -134,8 +139,10 @@
               res.push({
                 id_row: coord[0]-i,
                 id_col: coord[1],
+                id: coord,
+                boat: lenght,
                 vector: vector,
-                class: 'fill'
+                class: 'full'
               });
             DelAround(res[i],arr_coord);
           }
@@ -154,8 +161,10 @@
             res.push({
               id_row: coord[0],
               id_col: coord[1]+i,
+              id: coord,
+              boat: lenght,
               vector: vector,
-              class: 'fill'
+              class: 'full'
             });
             DelAround(res[i],arr_coord);
 
@@ -175,8 +184,10 @@
             res.push({
               id_row: coord[0]+i,
               id_col: coord[1],
+              id: coord,
+              boat: lenght,
               vector: vector,
-              class: 'fill'
+              class: 'full'
             });
             DelAround(res[i],arr_coord);
 
@@ -195,9 +206,11 @@
           for(var i=0;i<lenght;i++){
             res.push({
               id_row: coord[0],
-              vector: vector,
               id_col: coord[1]-i,
-              class: 'fill'
+              id: coord,
+              boat: lenght,
+              vector: vector,
+              class: 'full'
             });
             DelAround(res[i],arr_coord);
 
@@ -231,7 +244,6 @@
         res.push(item);
       });
     });
-    console.log(res);
     return res;
   }
 
@@ -251,9 +263,8 @@
       }
     }
   boats.forEach(function (item) {
-    res[item.id_row][item.id_col].class='full'
+    res[item.id_row][item.id_col]=item;
   });
-    console.log(res);
     return res;
   }
     export default {
@@ -266,7 +277,11 @@
             else{
               this.userdata[tr][td].class = 'shut';
             }
-          }
+          },
+        restart(){
+            this.botdata=CreateBoat();
+            this.userdata=CreateBoat();
+        }
       },
       data(){
           var arr1 = CreateBoat();
@@ -274,260 +289,17 @@
           return {
             botdata:arr1,
             userdata: arr2
-            /*botdata:[
-              [
-                {id_row:1,id_col:1, class: 'empty'},
-                {id_row:1,id_col:2, class: 'empty'},
-                {id_row:1,id_col:3, class: 'empty'},
-                {id_row:1,id_col:4, class: 'empty'},
-                {id_row:1,id_col:5, class: 'empty'},
-                {id_row:1,id_col:6, class: 'empty'},
-                {id_row:1,id_col:7, class: 'empty'},
-                {id_row:1,id_col:8, class: 'full'},
-                {id_row:1,id_col:9, class: 'empty'},
-                {id_row:1,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:2,id_col:1, class: 'empty'},
-                {id_row:2,id_col:2, class: 'full'},
-                {id_row:2,id_col:3, class: 'empty'},
-                {id_row:2,id_col:4, class: 'full'},
-                {id_row:2,id_col:5, class: 'empty'},
-                {id_row:2,id_col:6, class: 'empty'},
-                {id_row:2,id_col:7, class: 'empty'},
-                {id_row:2,id_col:8, class: 'empty'},
-                {id_row:2,id_col:9, class: 'empty'},
-                {id_row:2,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:3,id_col:1, class: 'empty'},
-                {id_row:3,id_col:2, class: 'empty'},
-                {id_row:3,id_col:3, class: 'empty'},
-                {id_row:3,id_col:4, class: 'empty'},
-                {id_row:3,id_col:5, class: 'empty'},
-                {id_row:3,id_col:6, class: 'empty'},
-                {id_row:3,id_col:7, class: 'empty'},
-                {id_row:3,id_col:8, class: 'empty'},
-                {id_row:3,id_col:9, class: 'empty'},
-                {id_row:3,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:4,id_col:1, class: 'empty'},
-                {id_row:4,id_col:2, class: 'empty'},
-                {id_row:4,id_col:3, class: 'empty'},
-                {id_row:4,id_col:4, class: 'empty'},
-                {id_row:4,id_col:5, class: 'full'},
-                {id_row:4,id_col:6, class: 'full'},
-                {id_row:4,id_col:7, class: 'empty'},
-                {id_row:4,id_col:8, class: 'full'},
-                {id_row:4,id_col:9, class: 'full'},
-                {id_row:4,id_col:10, class: 'full'},
-
-              ],
-              [
-                {id_row:5,id_col:1, class: 'empty'},
-                {id_row:5,id_col:2, class: 'full'},
-                {id_row:5,id_col:3, class: 'empty'},
-                {id_row:5,id_col:4, class: 'empty'},
-                {id_row:5,id_col:5, class: 'empty'},
-                {id_row:5,id_col:6, class: 'empty'},
-                {id_row:5,id_col:7, class: 'empty'},
-                {id_row:5,id_col:8, class: 'empty'},
-                {id_row:5,id_col:9, class: 'empty'},
-                {id_row:5,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:6,id_col:1, class: 'empty'},
-                {id_row:6,id_col:2, class: 'full'},
-                {id_row:6,id_col:3, class: 'empty'},
-                {id_row:6,id_col:4, class: 'full'},
-                {id_row:6,id_col:5, class: 'full'},
-                {id_row:6,id_col:6, class: 'empty'},
-                {id_row:6,id_col:7, class: 'empty'},
-                {id_row:6,id_col:8, class: 'empty'},
-                {id_row:6,id_col:9, class: 'full'},
-                {id_row:6,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:7,id_col:1, class: 'empty'},
-                {id_row:7,id_col:2, class: 'full'},
-                {id_row:7,id_col:3, class: 'empty'},
-                {id_row:7,id_col:4, class: 'empty'},
-                {id_row:7,id_col:5, class: 'empty'},
-                {id_row:7,id_col:6, class: 'empty'},
-                {id_row:7,id_col:7, class: 'empty'},
-                {id_row:7,id_col:8, class: 'empty'},
-                {id_row:7,id_col:9, class: 'empty'},
-                {id_row:7,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:8,id_col:1, class: 'empty'},
-                {id_row:8,id_col:2, class: 'empty'},
-                {id_row:8,id_col:3, class: 'empty'},
-                {id_row:8,id_col:4, class: 'empty'},
-                {id_row:8,id_col:5, class: 'empty'},
-                {id_row:8,id_col:6, class: 'empty'},
-                {id_row:8,id_col:7, class: 'empty'},
-                {id_row:8,id_col:8, class: 'empty'},
-                {id_row:8,id_col:9, class: 'empty'},
-                {id_row:8,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:9,id_col:1, class: 'empty'},
-                {id_row:9,id_col:2, class: 'full'},
-                {id_row:9,id_col:3, class: 'full'},
-                {id_row:9,id_col:4, class: 'full'},
-                {id_row:9,id_col:5, class: 'full'},
-                {id_row:9,id_col:6, class: 'empty'},
-                {id_row:9,id_col:7, class: 'empty'},
-                {id_row:9,id_col:8, class: 'empty'},
-                {id_row:9,id_col:9, class: 'full'},
-                {id_row:9,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:10,id_col:1, class: 'empty'},
-                {id_row:10,id_col:2, class: 'empty'},
-                {id_row:10,id_col:3, class: 'empty'},
-                {id_row:10,id_col:4, class: 'empty'},
-                {id_row:10,id_col:5, class: 'empty'},
-                {id_row:10,id_col:6, class: 'empty'},
-                {id_row:10,id_col:7, class: 'empty'},
-                {id_row:10,id_col:8, class: 'empty'},
-                {id_row:10,id_col:9, class: 'full'},
-                {id_row:10,id_col:10, class: 'empty'}
-              ]],
-            userdata: [
-              [
-                {id_row:1,id_col:1, class: 'empty'},
-                {id_row:1,id_col:2, class: 'empty'},
-                {id_row:1,id_col:3, class: 'empty'},
-                {id_row:1,id_col:4, class: 'empty'},
-                {id_row:1,id_col:5, class: 'empty'},
-                {id_row:1,id_col:6, class: 'empty'},
-                {id_row:1,id_col:7, class: 'empty'},
-                {id_row:1,id_col:8, class: 'full'},
-                {id_row:1,id_col:9, class: 'empty'},
-                {id_row:1,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:2,id_col:1, class: 'empty'},
-                {id_row:2,id_col:2, class: 'full'},
-                {id_row:2,id_col:3, class: 'empty'},
-                {id_row:2,id_col:4, class: 'full'},
-                {id_row:2,id_col:5, class: 'empty'},
-                {id_row:2,id_col:6, class: 'empty'},
-                {id_row:2,id_col:7, class: 'empty'},
-                {id_row:2,id_col:8, class: 'empty'},
-                {id_row:2,id_col:9, class: 'empty'},
-                {id_row:2,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:3,id_col:1, class: 'empty'},
-                {id_row:3,id_col:2, class: 'empty'},
-                {id_row:3,id_col:3, class: 'empty'},
-                {id_row:3,id_col:4, class: 'empty'},
-                {id_row:3,id_col:5, class: 'empty'},
-                {id_row:3,id_col:6, class: 'empty'},
-                {id_row:3,id_col:7, class: 'empty'},
-                {id_row:3,id_col:8, class: 'empty'},
-                {id_row:3,id_col:9, class: 'empty'},
-                {id_row:3,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:4,id_col:1, class: 'empty'},
-                {id_row:4,id_col:2, class: 'empty'},
-                {id_row:4,id_col:3, class: 'empty'},
-                {id_row:4,id_col:4, class: 'empty'},
-                {id_row:4,id_col:5, class: 'full'},
-                {id_row:4,id_col:6, class: 'full'},
-                {id_row:4,id_col:7, class: 'empty'},
-                {id_row:4,id_col:8, class: 'full'},
-                {id_row:4,id_col:9, class: 'full'},
-                {id_row:4,id_col:10, class: 'full'},
-
-              ],
-              [
-                {id_row:5,id_col:1, class: 'empty'},
-                {id_row:5,id_col:2, class: 'full'},
-                {id_row:5,id_col:3, class: 'empty'},
-                {id_row:5,id_col:4, class: 'empty'},
-                {id_row:5,id_col:5, class: 'empty'},
-                {id_row:5,id_col:6, class: 'empty'},
-                {id_row:5,id_col:7, class: 'empty'},
-                {id_row:5,id_col:8, class: 'empty'},
-                {id_row:5,id_col:9, class: 'empty'},
-                {id_row:5,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:6,id_col:1, class: 'empty'},
-                {id_row:6,id_col:2, class: 'full'},
-                {id_row:6,id_col:3, class: 'empty'},
-                {id_row:6,id_col:4, class: 'full'},
-                {id_row:6,id_col:5, class: 'full'},
-                {id_row:6,id_col:6, class: 'empty'},
-                {id_row:6,id_col:7, class: 'empty'},
-                {id_row:6,id_col:8, class: 'empty'},
-                {id_row:6,id_col:9, class: 'full'},
-                {id_row:6,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:7,id_col:1, class: 'empty'},
-                {id_row:7,id_col:2, class: 'full'},
-                {id_row:7,id_col:3, class: 'empty'},
-                {id_row:7,id_col:4, class: 'empty'},
-                {id_row:7,id_col:5, class: 'empty'},
-                {id_row:7,id_col:6, class: 'empty'},
-                {id_row:7,id_col:7, class: 'empty'},
-                {id_row:7,id_col:8, class: 'empty'},
-                {id_row:7,id_col:9, class: 'empty'},
-                {id_row:7,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:8,id_col:1, class: 'empty'},
-                {id_row:8,id_col:2, class: 'empty'},
-                {id_row:8,id_col:3, class: 'empty'},
-                {id_row:8,id_col:4, class: 'empty'},
-                {id_row:8,id_col:5, class: 'empty'},
-                {id_row:8,id_col:6, class: 'empty'},
-                {id_row:8,id_col:7, class: 'empty'},
-                {id_row:8,id_col:8, class: 'empty'},
-                {id_row:8,id_col:9, class: 'empty'},
-                {id_row:8,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:9,id_col:1, class: 'empty'},
-                {id_row:9,id_col:2, class: 'full'},
-                {id_row:9,id_col:3, class: 'full'},
-                {id_row:9,id_col:4, class: 'full'},
-                {id_row:9,id_col:5, class: 'full'},
-                {id_row:9,id_col:6, class: 'empty'},
-                {id_row:9,id_col:7, class: 'empty'},
-                {id_row:9,id_col:8, class: 'empty'},
-                {id_row:9,id_col:9, class: 'full'},
-                {id_row:9,id_col:10, class: 'empty'}
-              ],
-              [
-                {id_row:10,id_col:1, class: 'empty'},
-                {id_row:10,id_col:2, class: 'empty'},
-                {id_row:10,id_col:3, class: 'empty'},
-                {id_row:10,id_col:4, class: 'empty'},
-                {id_row:10,id_col:5, class: 'empty'},
-                {id_row:10,id_col:6, class: 'empty'},
-                {id_row:10,id_col:7, class: 'empty'},
-                {id_row:10,id_col:8, class: 'empty'},
-                {id_row:10,id_col:9, class: 'full'},
-                {id_row:10,id_col:10, class: 'empty'}
-              ]]*/
 
           }
       },
         computed:{
-            // botdata(){
-            //    return CreateBoat();
-            // },
-            // userdata(){
-            //  return  CreateBoat();
-            // }
+            arr_coord_user(){
+              var arr_coord = [];
+              for (var i=0;i<100;i++){
+                arr_coord.push(i);
+              }
+              return arr_coord;
+            }
         },
         components:{
           BotField: botfield,
@@ -541,9 +313,20 @@
     display: flex;
     justify-content: center;
   }
-  .wrapper{
+  .flex{
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
+  }
+
+  button{
+    background: #2c3e50;
+    color: aliceblue;
+    width: 100px;
+    height: 30px;
+    box-shadow:  2px 2px 10px #2c3e50;
+    cursor: pointer;
+    border:none;
+    border-radius: 10px;
   }
 </style>
