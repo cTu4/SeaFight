@@ -156,7 +156,8 @@
 
       }
       case 1:{
-        if (arr_coord.indexOf(Number(String(coord[0])+String(coord[1]+lenght-1)))!==-1){
+        console.log(Number(String(coord[0]===0?99:coord[0])+String(coord[1]+lenght-1)));
+        if (arr_coord.indexOf(Number(String(coord[0]===0?99:coord[0])+String(coord[1]+lenght-1)))!==-1){ // при coord[0]===0 работает неправильно
           for(var i=0;i<lenght;i++){
             res.push({
               id_row: coord[0],
@@ -262,6 +263,7 @@
         res[i].push({id_row:i,id_col:k,class:'empty'});
       }
     }
+    console.log(boats);
   boats.forEach(function (item) {
     res[item.id_row][item.id_col]=item;
   });

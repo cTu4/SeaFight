@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table border="1" v-drag-and-drop:options="options">
+    <table border="1" >
       <tr v-for="tr in data">
         <td v-for="td in tr" :class="td.class">
         </td>
